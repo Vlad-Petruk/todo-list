@@ -1,0 +1,1 @@
+(()=>{let o={title:"MyTodo",description:"sdfgsdg",dueDate:"11/12/12",priority:"top"};console.log(o);let e=(o=>{const e=[];return{projectTitle:"NewProj",todos:e,addTodo:o=>{e.push(o)},deleteTodo:o=>{e.splice(o,1)}}})();e.addTodo(o),console.log(e)})();
