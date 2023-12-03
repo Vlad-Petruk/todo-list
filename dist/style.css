@@ -1,0 +1,30 @@
+body, html {
+    height: 100%;
+    margin: 0;
+  }
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+  
+.logo {
+/* Add styles for your logo */
+}
+
+.container {
+display: flex;
+height: 100%;
+}
+
+.navigation {
+width: 200px;
+background-color: #e0e0e0;
+}
+
+.content {
+flex: 1;
+padding: 20px;
+}
