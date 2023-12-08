@@ -75,14 +75,21 @@ const domLoader = () =>{
       modal.style.display = 'block';
   
       // Close modal when the close button is clicked
-      const closeModalBtn = document.getElementById('close-modal');
-      closeModalBtn.addEventListener('click', () => closeModal());
+      const closeButton = document.createElement('div');
+      closeButton.className = 'close';
+      closeButton.innerHTML = '&times;';
+
+      // Attach the event listener to close the modal
+      closeButton.addEventListener('click', () => closeModal());
+
+      // Append the close button to the modal content
+      modalContent.appendChild(closeButton);
   
       // Optional: Add functionality to update or delete todo in the modal
-      // const updateBtn = document.createElement('button');
-      // updateBtn.textContent = 'Update';
-      // updateBtn.addEventListener('click', () => updateTodoDetails(index));
-      // modalContent.appendChild(updateBtn);
+      const updateBtn = document.createElement('button');
+      updateBtn.textContent = 'Update';
+      updateBtn.addEventListener('click', () => updateTodoDetails(index));
+      modalContent.appendChild(updateBtn);
     }
   
     // Function to close the modal
@@ -99,7 +106,7 @@ const domLoader = () =>{
     }
   
     // Initial render
-    renderNavigation();
+    // renderNavigation();
     
     // Add this function to the existing script.js file
 function addSampleData() {
@@ -114,7 +121,12 @@ function addSampleData() {
     showContent(sections.find(section => section.id === 'today'));
   }
   addSampleData()
-    // const navigation = document.getElementById('navigation');
+    
+  
+  
+  
+  
+  // const navigation = document.getElementById('navigation');
     // const content = document.getElementById('content');
   
     // // Sample data for navigation items and corresponding content
