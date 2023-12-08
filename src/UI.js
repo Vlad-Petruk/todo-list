@@ -29,15 +29,16 @@ const domLoader = () =>{
   
     // Initial sample data for navigation items and corresponding content
     let sections = [
+      { id: 'all', title: 'All Todos', content: [] },
       { id: 'today', title: 'Today', content: [] },
       { id: 'week', title: 'This Week', content: [] },
-      { id: 'all', title: 'All Todos', content: [] },
     ];
   
     // Function to render navigation items
     function renderNavigation() {
       sections.forEach(section => {
         const item = document.createElement('div');
+        item.classList.add('nav-element')
         item.textContent = section.title;
         item.addEventListener('click', () => showContent(section));
         navigation.appendChild(item);
@@ -50,6 +51,10 @@ const domLoader = () =>{
       content.innerHTML = '';
       // Display new content
       const contentElement = document.createElement('div');
+      const sectionTitle = document.createElement('div');
+      sectionTitle.classList.add('section-title')
+      sectionTitle.textContent = section.title;
+      contentElement.appendChild(sectionTitle);
   
       // Check if there is content in the section
       if (section.content.length === 0) {
@@ -60,6 +65,7 @@ const domLoader = () =>{
         // Iterate over the array and create elements for each todo item
         section.content.forEach((todo, index) => {
           const todoElement = document.createElement('div');
+          todoElement.classList.add('todo')
           todoElement.textContent = todo.title; // Assuming each todo has a 'title' property
           todoElement.addEventListener('click', () => openModal(todo, index));
           contentElement.appendChild(todoElement);
@@ -71,7 +77,13 @@ const domLoader = () =>{
   
     // Function to open modal with todo details
     function openModal(todo, index) {
-      modalContent.innerHTML = `<p>Todo Details:</p><p>Title: ${todo.title}</p><p>Details: ${todo.details || 'No details available'}</p>`;
+      modalContent.innerHTML = `
+      <p>Todo Details:</p>
+      <p>Title: ${todo.title}</p>
+      <p>Descrption: ${todo.description || 'No details available'}</p>
+      <p>Due date: ${todo.dueDate}<p>
+      <p>Priorty: ${todo.priority}
+      `;
       modal.style.display = 'block';
   
       // Close modal when the close button is clicked
@@ -112,8 +124,7 @@ const domLoader = () =>{
 function addSampleData() {
     // Example of adding sample data to the 'today' section
     sections.find(section => section.id === 'today').content = [
-      { title: 'Complete Assignment', details: 'Finish the todo app project.' },
-      { title: 'Go for a Run', details: 'Stay active and healthy.' },
+      todo, todo2
     ];
   
     // Refresh the navigation and content to see the changes
@@ -122,50 +133,6 @@ function addSampleData() {
   }
   addSampleData()
     
-  
-  
-  
-  
-  // const navigation = document.getElementById('navigation');
-    // const content = document.getElementById('content');
-  
-    // // Sample data for navigation items and corresponding content
-    // const sections = [
-    //   { id: 'section1', title: 'All', content: renderTodoOnSection(project1) },
-    //   { id: 'section2', title: 'Today', content: 'Content for Section 2' },
-    //   { id: 'section3', title: 'Week', content: 'Content for Section 3' },
-    //   { id: 'section4', title: 'Important', content: 'Content for Section 4' },
-    //   { id: 'section5', title: 'Completed', content: 'Content for Section 5' },
-    //   // Add more sections as needed
-    // ];
-
-
-    // function renderNavigation() {
-    //   sections.forEach(section => {
-    //     const item = document.createElement('div');
-    //     item.textContent = section.title;
-    //     item.addEventListener('click', () => showContent(section));
-    //     navigation.appendChild(item);
-    //   });
-    // }
-  
-    // function showContent(section) {
-    //   // Hide previous content
-    //   content.innerHTML = '';
-    //   // Display new content
-    //   const contentElement = document.createElement('div');
-    //   contentElement.textContent = section.content;
-    //   content.appendChild(contentElement);
-    // }
-  
-    // // Initial render
-    // renderNavigation();
-
-    // return {
-    //     sections,
-    //     renderNavigation,
-    //     showContent
-    // }
 }
 
 export {domLoader}
