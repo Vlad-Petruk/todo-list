@@ -3,7 +3,7 @@ import { TodoFactory, ProjectFactory } from "./factories";
 // Maybe try to work with this function all the way, with sections(today,week, month) 
 // maybe tre to update function to be able to add todos and create and add projects as well
 
-let todo = TodoFactory('MyTodo','sdfgsdg','11/12/12','top');
+let todo = TodoFactory('MyTodo','sdfgsdg','11/12/12','top','false');
 let todo2 = TodoFactory('MyTodo2','sdfgsdg','11/12/12','top');
 let todo3 = TodoFactory('MyTodo3','sdfgsdg','11/12/12','top');
 console.log(todo)
@@ -64,11 +64,26 @@ const domLoader = () =>{
       } else {
         // Iterate over the array and create elements for each todo item
         section.content.forEach((todo, index) => {
+          const todoContainer = document.createElement('div');
+          todoContainer.classList.add('todo')
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = todo.complete;
+
+          checkbox.addEventListener('change', () => {
+            todo.complete = checkbox.checked;
+            // You can add additional logic here, such as updating the UI or saving to storage
+          });
+          
           const todoElement = document.createElement('div');
-          todoElement.classList.add('todo')
+          
           todoElement.textContent = todo.title; // Assuming each todo has a 'title' property
           todoElement.addEventListener('click', () => openModal(todo, index));
-          contentElement.appendChild(todoElement);
+
+          todoContainer.appendChild(checkbox);
+          todoContainer.appendChild(todoElement);
+          contentElement.appendChild(todoContainer)
+          
         });
       }
   

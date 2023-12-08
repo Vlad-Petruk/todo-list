@@ -19,14 +19,15 @@ const ProjectFactory = (projectTitle) => {
     };
   };
 
-const TodoFactory = (title, description, dueDate, priority) => {
-
+const TodoFactory = (title, description, dueDate, priority,complite) => {
+  complite: false;
 
     return {
         title,
         description, 
         dueDate, 
-        priority
+        priority,
+        complite
     };
 }
 
