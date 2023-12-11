@@ -17,9 +17,6 @@ let project1 = ProjectFactory('NewProj')
  console.log(project1)
 
 
-const renderTodoOnSection = (project)=>{
-    return project.todos[0].title;
-}
 
 const domLoader = () =>{
     const navigation = document.getElementById('navigation');
@@ -31,7 +28,9 @@ const domLoader = () =>{
     let sections = [
       { id: 'all', title: 'All Todos', content: [] },
       { id: 'today', title: 'Today', content: [] },
-      { id: 'week', title: 'This Week', content: [] },
+      { id: 'week', title: 'This week', content: [] },
+      { id: 'important', title: 'Important', content: [] },
+      { id: 'completed', title: 'Completed', content: [] },
     ];
   
     // Function to render navigation items
@@ -73,6 +72,11 @@ const domLoader = () =>{
           checkbox.addEventListener('change', () => {
             todo.complete = checkbox.checked;
             // You can add additional logic here, such as updating the UI or saving to storage
+            if (checkbox.checked){
+            todoElement.classList.add('crossed-out');
+            } else {
+              todoElement.classList.remove('crossed-out');
+            }
           });
           
           const todoElement = document.createElement('div');
@@ -132,12 +136,12 @@ const domLoader = () =>{
       closeModal();
     }
   
-    // Initial render
-    // renderNavigation();
     
-    // Add this function to the existing script.js file
+    
 function addSampleData() {
     // Example of adding sample data to the 'today' section
+    // need to update this function
+    // it should be able to add data to any section
     sections.find(section => section.id === 'today').content = [
       todo, todo2
     ];

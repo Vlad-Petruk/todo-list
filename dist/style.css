@@ -36,6 +36,7 @@ header {
   padding: 15px;
   font-size: 20px;
   display: flex;
+  border-bottom: 1px solid rgb(207, 193, 193);
 }
 
 .navigation {
