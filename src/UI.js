@@ -3,38 +3,37 @@ import { TodoFactory, ProjectFactory } from "./factories";
 // Maybe try to work with this function all the way, with sections(today,week, month) 
 // maybe tre to update function to be able to add todos and create and add projects as well
 
-let todo = TodoFactory('MyTodo','sdfgsdg','11/12/12','top','false');
+let todo = TodoFactory('MyTodo','sdfgsdg','11/12/12','top',);
 let todo2 = TodoFactory('MyTodo2','sdfgsdg','11/12/12','top');
 let todo3 = TodoFactory('MyTodo3','sdfgsdg','11/12/12','top');
 console.log(todo)
 
 let project1 = ProjectFactory('NewProj')
- project1.addTodo(todo);
- project1.addTodo(todo2);
- project1.addTodo(todo3);
+//  project1.addTodo(todo);
+//  project1.addTodo(todo2);
+//  project1.addTodo(todo3);
 
- project1.deleteTodo(todo3)
  console.log(project1)
 
-
+// Initial sample data for navigation items and corresponding content
+let sections = [
+  { id: 'all', title: 'All Todos', content: [] },
+  { id: 'today', title: 'Today', content: [] },
+  { id: 'week', title: 'This week', content: [] },
+  { id: 'important', title: 'Important', content: [] },
+  { id: 'completed', title: 'Completed', content: [] },
+];
 
 const domLoader = () =>{
     const navigation = document.getElementById('navigation');
     const content = document.getElementById('content');
     const modal = document.getElementById('modal');
     const modalContent = document.getElementById('modal-content');
-  
-    // Initial sample data for navigation items and corresponding content
-    let sections = [
-      { id: 'all', title: 'All Todos', content: [] },
-      { id: 'today', title: 'Today', content: [] },
-      { id: 'week', title: 'This week', content: [] },
-      { id: 'important', title: 'Important', content: [] },
-      { id: 'completed', title: 'Completed', content: [] },
-    ];
+
   
     // Function to render navigation items
     function renderNavigation() {
+      navigation.innerHTML = '';
       sections.forEach(section => {
         const item = document.createElement('div');
         item.classList.add('nav-element')
@@ -74,6 +73,7 @@ const domLoader = () =>{
             // You can add additional logic here, such as updating the UI or saving to storage
             if (checkbox.checked){
             todoElement.classList.add('crossed-out');
+            
             } else {
               todoElement.classList.remove('crossed-out');
             }
@@ -138,20 +138,26 @@ const domLoader = () =>{
   
     
     
-function addSampleData() {
+function addSampleData(sectionId, project, todo) {
     // Example of adding sample data to the 'today' section
     // need to update this function
     // it should be able to add data to any section
-    sections.find(section => section.id === 'today').content = [
-      todo, todo2
-    ];
+    project.addTodo(todo)
+    sections.find(section => section.id === sectionId).content = project.todos
+
+    // sections.find(section => section.id === sectionId).content = [
+    //   todo, todo2
+    // ]
   
     // Refresh the navigation and content to see the changes
     renderNavigation();
-    showContent(sections.find(section => section.id === 'today'));
+    showContent(sections.find(section => section.id === sectionId));
   }
-  addSampleData()
+  addSampleData('week', project1, todo3)
     
 }
 
-export {domLoader}
+export {
+  domLoader,
+  sections,
+}
