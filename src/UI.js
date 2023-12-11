@@ -31,7 +31,6 @@ const domLoader = () =>{
       { id: 'week', title: 'This week', content: [] },
       { id: 'important', title: 'Important', content: [] },
       { id: 'completed', title: 'Completed', content: [] },
-      { id: 'completed', title: 'Completed', content: [] },
     ];
   
     // Function to render navigation items
