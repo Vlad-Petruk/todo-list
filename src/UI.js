@@ -3,10 +3,10 @@ import { TodoFactory, ProjectFactory } from "./factories";
 // Maybe try to work with this function all the way, with sections(today,week, month) 
 // maybe tre to update function to be able to add todos and create and add projects as well
 
-let todo = TodoFactory('MyTodo','sdfgsdg','11/12/12','top',);
+let defaultTodo = TodoFactory('Open me...','i know how you feel... but keep going, just one step at a times','11/12/12','top',);
 let todo2 = TodoFactory('MyTodo2','sdfgsdg','11/12/12','top');
 let todo3 = TodoFactory('MyTodo3','sdfgsdg','11/12/12','top');
-console.log(todo)
+console.log(defaultTodo)
 
 let project2 = ProjectFactory('newProj','NewProj')
 //  project1.addTodo(todo);
@@ -18,14 +18,14 @@ let project2 = ProjectFactory('newProj','NewProj')
 
 // Initial sample data for navigation items and corresponding content
 let sections = [
-  { id: 'all', title: 'All Todos', todos: [] },
-  { id: 'today', title: 'Today', todos: [] },
-  { id: 'week', title: 'This week', todos: [] },
-  { id: 'important', title: 'Important', todos: [] },
-  { id: 'completed', title: 'Completed', todos: [] },
+  { id: 'all', title: 'All Todos', todos: [defaultTodo] },
+  // { id: 'today', title: 'Today', todos: [] },
+  // { id: 'week', title: 'This week', todos: [] },
+  // { id: 'important', title: 'Important', todos: [] },
+  // { id: 'completed', title: 'Completed', todos: [] },
 ];
 
-sections.push(project2)
+// sections.push(project2)
 
 const domLoader = () =>{
     const navigation = document.getElementById('navigation');
@@ -51,14 +51,43 @@ const domLoader = () =>{
   
     // Function to show content for a selected section
     function showContent(section) {
-      // Hide previous content
+
       content.innerHTML = '';
-      // Display new content
       const contentElement = document.createElement('div');
+      // Title
       const sectionTitle = document.createElement('div');
       sectionTitle.classList.add('section-title')
       sectionTitle.textContent = section.title;
       contentElement.appendChild(sectionTitle);
+      //Button 
+      const addTodoButton = document.createElement('button');
+      addTodoButton.type= 'button';
+      addTodoButton.innerHTML = "Add Todo";
+      addTodoButton.classList.add('add-todo-button')
+      contentElement.appendChild(addTodoButton);
+      addTodoButton.addEventListener('click',()=>{
+        modalContent
+        // Here should be form element with submitAll button
+        modal.style.display = 'block';
+    
+        // Close modal when the close button is clicked
+        const closeButton = document.createElement('div');
+        closeButton.className = 'close';
+        closeButton.innerHTML = '&times;';
+  
+        // Attach the event listener to close the modal
+        closeButton.addEventListener('click', () => closeModal());
+  
+        // Append the close button to the modal content
+        modalContent.appendChild(closeButton);
+    
+        // Optional: Add functionality to update or delete todo in the modal
+        const updateBtn = document.createElement('button');
+        updateBtn.textContent = 'Update';
+        updateBtn.addEventListener('click', () => updateTodoDetails(index));
+        modalContent.appendChild(updateBtn);
+      })
+
   
       // Check if there is content in the section
       if (section.todos.length === 0) {
@@ -143,7 +172,7 @@ const domLoader = () =>{
   
     
     
-  function addSampleData(sectionId, project, todo) {
+  function populateSection(sectionId, project, todo) {
     project.addTodo(todo)
     sections.find(section => section.id === sectionId).todos = project.todos;
   
@@ -152,16 +181,17 @@ const domLoader = () =>{
     showContent(sections.find(section => section.id === sectionId));
   }
   
-  addSampleData('week', project2, todo3);
+  // addSampleData('newProj', project2, todo3);
 
   renderNavigation();
+  showContent(sections.find(section => section.id === 'all'));
 
   return{
     renderNavigation,
     showContent,
     openModal,
     closeModal,
-    addSampleData
+    populateSection
   }
 }
 

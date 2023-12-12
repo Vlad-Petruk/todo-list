@@ -23,6 +23,11 @@ header {
   height: 100%;
 }
 
+.content {
+  flex: 1;
+  padding: 20px;
+  }
+
 .section-title {
   padding: 10px;
   font-size: 30px;
@@ -32,8 +37,8 @@ header {
   margin-bottom: 40px;
 }
 
-.project-separator {
-  margin-bottom: 40px;
+.add-todo-button{
+  
 }
 
 .todo {
@@ -54,15 +59,14 @@ header {
   gap: 10px;
 }
 
+.project-separator {
+  margin-bottom: 40px;
+}
+
 .nav-element{
   padding: 10px;
   border: 1px solid black;
   border-radius: 8px;
-}
-
-.content {
-flex: 1;
-padding: 20px;
 }
 
 
