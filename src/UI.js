@@ -8,21 +8,24 @@ let todo2 = TodoFactory('MyTodo2','sdfgsdg','11/12/12','top');
 let todo3 = TodoFactory('MyTodo3','sdfgsdg','11/12/12','top');
 console.log(todo)
 
-let project1 = ProjectFactory('NewProj')
+let project2 = ProjectFactory('newProj','NewProj')
 //  project1.addTodo(todo);
 //  project1.addTodo(todo2);
 //  project1.addTodo(todo3);
 
- console.log(project1)
+ console.log(project2)
+ 
 
 // Initial sample data for navigation items and corresponding content
 let sections = [
-  { id: 'all', title: 'All Todos', content: [] },
-  { id: 'today', title: 'Today', content: [] },
-  { id: 'week', title: 'This week', content: [] },
-  { id: 'important', title: 'Important', content: [] },
-  { id: 'completed', title: 'Completed', content: [] },
+  { id: 'all', title: 'All Todos', todos: [] },
+  { id: 'today', title: 'Today', todos: [] },
+  { id: 'week', title: 'This week', todos: [] },
+  { id: 'important', title: 'Important', todos: [] },
+  { id: 'completed', title: 'Completed', todos: [] },
 ];
+
+sections.push(project2)
 
 const domLoader = () =>{
     const navigation = document.getElementById('navigation');
@@ -37,6 +40,9 @@ const domLoader = () =>{
       sections.forEach(section => {
         const item = document.createElement('div');
         item.classList.add('nav-element')
+        if (section.id === 'completed'){
+          item.classList.add('project-separator');
+        }
         item.textContent = section.title;
         item.addEventListener('click', () => showContent(section));
         navigation.appendChild(item);
@@ -55,13 +61,13 @@ const domLoader = () =>{
       contentElement.appendChild(sectionTitle);
   
       // Check if there is content in the section
-      if (section.content.length === 0) {
+      if (section.todos.length === 0) {
         const noTodosMessage = document.createElement('p');
         noTodosMessage.textContent = 'No todos for this section.';
         contentElement.appendChild(noTodosMessage);
       } else {
         // Iterate over the array and create elements for each todo item
-        section.content.forEach((todo, index) => {
+        section.todos.forEach((todo, index) => {
           const todoContainer = document.createElement('div');
           todoContainer.classList.add('todo')
           const checkbox = document.createElement('input');
@@ -73,7 +79,6 @@ const domLoader = () =>{
             // You can add additional logic here, such as updating the UI or saving to storage
             if (checkbox.checked){
             todoElement.classList.add('crossed-out');
-            
             } else {
               todoElement.classList.remove('crossed-out');
             }
@@ -138,23 +143,26 @@ const domLoader = () =>{
   
     
     
-function addSampleData(sectionId, project, todo) {
-    // Example of adding sample data to the 'today' section
-    // need to update this function
-    // it should be able to add data to any section
+  function addSampleData(sectionId, project, todo) {
     project.addTodo(todo)
-    sections.find(section => section.id === sectionId).content = project.todos
-
-    // sections.find(section => section.id === sectionId).content = [
-    //   todo, todo2
-    // ]
+    sections.find(section => section.id === sectionId).todos = project.todos;
   
     // Refresh the navigation and content to see the changes
     renderNavigation();
     showContent(sections.find(section => section.id === sectionId));
   }
-  addSampleData('week', project1, todo3)
-    
+  
+  addSampleData('week', project2, todo3);
+
+  renderNavigation();
+
+  return{
+    renderNavigation,
+    showContent,
+    openModal,
+    closeModal,
+    addSampleData
+  }
 }
 
 export {

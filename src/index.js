@@ -1,5 +1,5 @@
 import { TodoFactory, ProjectFactory } from "./factories";
-import { domLoader } from "./UI";
+import { domLoader,sections,renderNavigation } from "./UI";
 
 // i need to whrite local storage functions, peghaps in different module
 // add date-fns
@@ -11,6 +11,7 @@ import { domLoader } from "./UI";
 
 document.addEventListener('DOMContentLoaded', function () {
     domLoader();
+    // renderNavigation()
    });
   
    

@@ -1,4 +1,4 @@
-const ProjectFactory = (projectTitle) => {
+const ProjectFactory = (id, title) => {
     const todos = [];
   
     const addTodo = (todo) => {
@@ -12,7 +12,8 @@ const ProjectFactory = (projectTitle) => {
     }
   
     return {
-      projectTitle,
+      id,
+      title,
       todos,
       addTodo,
       deleteTodo,
