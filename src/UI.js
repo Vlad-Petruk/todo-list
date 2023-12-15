@@ -33,7 +33,6 @@ const domLoader = () =>{
     const modal = document.getElementById('modal');
     const modalContent = document.getElementById('modal-content');
 
-  
     // Function to render navigation items
     function renderNavigation() {
       navigation.innerHTML = '';
@@ -69,7 +68,6 @@ const domLoader = () =>{
         openTodoCreateModal();
       })
 
-  
       // Check if there is content in the section
       if (section.todos.length === 0) {
         const noTodosMessage = document.createElement('p');
@@ -96,7 +94,7 @@ const domLoader = () =>{
           
           const todoElement = document.createElement('div');
           
-          todoElement.textContent = todo.title; // Assuming each todo has a 'title' property
+          todoElement.textContent = todo.title; 
           todoElement.addEventListener('click', () => openTodoDetailsModal(todo, index));
 
           todoContainer.appendChild(checkbox);
@@ -110,10 +108,30 @@ const domLoader = () =>{
     }
 
     function openTodoCreateModal(){
-      modalContent
+      const modalTitle = document.createElement('h2');
+      modalTitle.innerHTML = 'Create Todo';
+      modalContent.appendChild(modalTitle);
       // Here should be form element with submitAll button
       modal.style.display = 'block';
-  
+      const todoForm = document.getElementById('todo-form');
+      const todoTitle = document.getElementById('title');
+      const todoPriority = document.getElementById('priority');
+      const todoDueDate = document.getElementById('dueDate');
+      const todoDescription = document.getElementById('description');
+      const todoSubmitBtn = document.getElementById('todo-submit')
+      modalContent.appendChild(todoForm);
+    
+      todoSubmitBtn.addEventListener('click', ()=>{
+        let newTodo = TodoFactory(todoTitle.value, todoDescription.value, todoDueDate.value,todoPriority.value);
+        console.log(newTodo);
+        sections[0].todos.push(newTodo);
+        closeModal();
+        // while (modalContent.firstChild) {
+        //   modalContent.removeChild(modalContent.firstChild);
+        // }
+        showContent(sections.find(section => section.id === 'all'));
+      })
+
       createCloseModalBtn();
       createUpdateModalBtn();
     }
@@ -148,7 +166,9 @@ const domLoader = () =>{
     // Function to close the modal
     function closeModal() {
       modal.style.display = 'none';
-      modalContent.innerHTML = '';
+      while (modalContent.firstChild) {
+        modalContent.removeChild(modalContent.firstChild);
+      }
     }
   
     function createUpdateModalBtn (){
@@ -169,7 +189,7 @@ const domLoader = () =>{
   
     
     
-  function populateSection(sectionId, project, todo) {
+    function populateSection(sectionId, project, todo) {
     project.addTodo(todo)
     sections.find(section => section.id === sectionId).todos = project.todos;
   
@@ -178,7 +198,6 @@ const domLoader = () =>{
     showContent(sections.find(section => section.id === sectionId));
   }
   
-  // addSampleData('newProj', project2, todo3);
 
   renderNavigation();
   showContent(sections.find(section => section.id === 'all'));
