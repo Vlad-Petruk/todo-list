@@ -3,7 +3,7 @@ import { TodoFactory, ProjectFactory } from "./factories";
 // Maybe try to work with this function all the way, with sections(today,week, month) 
 // maybe tre to update function to be able to add todos and create and add projects as well
 
-let defaultTodo = TodoFactory('Open me...','i know how you feel... but keep going, just one step at a times','11/12/12','top',);
+let defaultTodo = TodoFactory('Open me...','i know how you feel... but keep going, just one step at a time','11/12/12','top',);
 let todo2 = TodoFactory('MyTodo2','sdfgsdg','11/12/12','top');
 let todo3 = TodoFactory('MyTodo3','sdfgsdg','11/12/12','top');
 console.log(defaultTodo)
@@ -66,26 +66,7 @@ const domLoader = () =>{
       addTodoButton.classList.add('add-todo-button')
       contentElement.appendChild(addTodoButton);
       addTodoButton.addEventListener('click',()=>{
-        modalContent
-        // Here should be form element with submitAll button
-        modal.style.display = 'block';
-    
-        // Close modal when the close button is clicked
-        const closeButton = document.createElement('div');
-        closeButton.className = 'close';
-        closeButton.innerHTML = '&times;';
-  
-        // Attach the event listener to close the modal
-        closeButton.addEventListener('click', () => closeModal());
-  
-        // Append the close button to the modal content
-        modalContent.appendChild(closeButton);
-    
-        // Optional: Add functionality to update or delete todo in the modal
-        const updateBtn = document.createElement('button');
-        updateBtn.textContent = 'Update';
-        updateBtn.addEventListener('click', () => updateTodoDetails(index));
-        modalContent.appendChild(updateBtn);
+        openTodoCreateModal();
       })
 
   
@@ -116,7 +97,7 @@ const domLoader = () =>{
           const todoElement = document.createElement('div');
           
           todoElement.textContent = todo.title; // Assuming each todo has a 'title' property
-          todoElement.addEventListener('click', () => openModal(todo, index));
+          todoElement.addEventListener('click', () => openTodoDetailsModal(todo, index));
 
           todoContainer.appendChild(checkbox);
           todoContainer.appendChild(todoElement);
@@ -127,9 +108,17 @@ const domLoader = () =>{
   
       content.appendChild(contentElement);
     }
+
+    function openTodoCreateModal(){
+      modalContent
+      // Here should be form element with submitAll button
+      modal.style.display = 'block';
   
+      createCloseModalBtn();
+      createUpdateModalBtn();
+    }
     // Function to open modal with todo details
-    function openModal(todo, index) {
+    function openTodoDetailsModal(todo, index) {
       modalContent.innerHTML = `
       <p>Todo Details:</p>
       <p>Title: ${todo.title}</p>
@@ -139,6 +128,11 @@ const domLoader = () =>{
       `;
       modal.style.display = 'block';
   
+      createCloseModalBtn();
+      createUpdateModalBtn();
+    }
+  
+    function createCloseModalBtn(){
       // Close modal when the close button is clicked
       const closeButton = document.createElement('div');
       closeButton.className = 'close';
@@ -149,19 +143,22 @@ const domLoader = () =>{
 
       // Append the close button to the modal content
       modalContent.appendChild(closeButton);
+    }
+
+    // Function to close the modal
+    function closeModal() {
+      modal.style.display = 'none';
+      modalContent.innerHTML = '';
+    }
   
+    function createUpdateModalBtn (){
       // Optional: Add functionality to update or delete todo in the modal
       const updateBtn = document.createElement('button');
       updateBtn.textContent = 'Update';
       updateBtn.addEventListener('click', () => updateTodoDetails(index));
       modalContent.appendChild(updateBtn);
     }
-  
-    // Function to close the modal
-    function closeModal() {
-      modal.style.display = 'none';
-    }
-  
+
     // Function to update todo details (optional)
     function updateTodoDetails(index) {
       // Add your logic to update todo details
@@ -189,7 +186,7 @@ const domLoader = () =>{
   return{
     renderNavigation,
     showContent,
-    openModal,
+    openTodoDetailsModal,
     closeModal,
     populateSection
   }
