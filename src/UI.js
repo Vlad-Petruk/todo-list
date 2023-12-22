@@ -7,7 +7,7 @@ let defaultTodo = TodoFactory('Open me...','i know how you feel... but keep goin
  
 // Initial sample data for navigation items and corresponding content
 let sections = [
-  { id: 'all', title: 'All Todos', todos: [defaultTodo] },
+  { id: 'All todos', title: 'All todos', todos: [defaultTodo] },
 ];
 
 const domLoader = () =>{
@@ -15,6 +15,8 @@ const domLoader = () =>{
     const content = document.getElementById('content');
     const modal = document.getElementById('modal');
     const modalContent = document.getElementById('modal-content');
+    const sectionTitle = createAndAppendElement('div', 'section-title',null, null, content)
+    
 
     // Function to render navigation items
     function renderNavigation() {
@@ -37,14 +39,17 @@ const domLoader = () =>{
   
     // Function to show content for a selected section
     function showContent(section) {
+      const children = content.children;
 
-      content.innerHTML = '';
+      for (const child of children) {
+          if (child.id !== 'section-title') {
+              child.innerHTML = '';
+          }
+      }
       const contentElement = document.createElement('div');
       // Title
-      const sectionTitle = document.createElement('div');
-      sectionTitle.classList.add('section-title')
-      sectionTitle.textContent = section.title;
-      contentElement.appendChild(sectionTitle);
+      sectionTitle.innerHTML = '';
+      sectionTitle.innerHTML = section.title;
       //Button 
       const addTodoButton = document.createElement('button');
       addTodoButton.type= 'button';
@@ -146,7 +151,7 @@ const domLoader = () =>{
       const modalTitle = document.createElement('h2');
       modalTitle.innerHTML = 'Create Todo';
       modalContent.appendChild(modalTitle);
-      // Here should be form element with submitAll button
+      // Here should be form element with submitAll todos button
       modal.style.display = 'block';
       // const todoForm = document.getElementById('todo-form');
       const todoForm = document.createElement("form");
@@ -166,9 +171,17 @@ const domLoader = () =>{
         let newTodo = TodoFactory(todoTitle.value, todoDescription.value, todoDueDate.value,todoPriority.value);
         console.log(newTodo);
         // i want here to be able to create todo in section that i want
-        populateSection('all',newTodo)
+        // maybe througth modalTitle типу if contentchild is no modalTitte {content.innerhtml=== ''}
+        if(sectionTitle.innerHTML === 'All todos') {
+          populateSection('All todos',newTodo);
+        } else {
+          populateSection(sectionTitle.textContent, newTodo);
+          populateSection('All todos',newTodo);
+        }
+        
+        // populateSection(sectionTitle.innerHTML, newTodo)
         closeModal();
-        showContent(sections.find(section => section.id === 'all'));
+        showContent(sections.find(section => section.id === sectionTitle.innerHTML));
       })
       modalContent.appendChild(todoForm);
   
@@ -240,7 +253,7 @@ const domLoader = () =>{
   
 
   renderNavigation();
-  showContent(sections.find(section => section.id === 'all'));
+  showContent(sections.find(section => section.id === 'All todos'));
 
   return{
     renderNavigation,
