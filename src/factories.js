@@ -1,4 +1,4 @@
-const ProjectFactory = (id, title) => {
+const SectionFactory = (id, title) => {
     const todos = [];
   
     const addTodo = (todo) => {
@@ -34,4 +34,4 @@ const TodoFactory = (title, description, dueDate, priority,complite) => {
 
 
 
- export {ProjectFactory, TodoFactory}
+ export {SectionFactory, TodoFactory}

@@ -1,4 +1,4 @@
-import { TodoFactory, ProjectFactory } from "./factories";
+import { TodoFactory, SectionFactory } from "./factories";
 
 // Maybe try to work with this function all the way, with sections(today,week, month) 
 // maybe tre to update function to be able to add todos and create and add projects as well
@@ -19,6 +19,10 @@ const domLoader = () =>{
     // Function to render navigation items
     function renderNavigation() {
       navigation.innerHTML = '';
+      const createProjectBtn = createAndAppendElement('button', 'create-project-btn', null, 'Create project', navigation);
+      createProjectBtn.addEventListener('click', ()=>{
+        openSectionCreateModal();
+      })
       sections.forEach(section => {
         const item = document.createElement('div');
         item.classList.add('nav-element')
@@ -90,6 +94,54 @@ const domLoader = () =>{
       content.appendChild(contentElement);
     }
 
+    // Helper function to create and append elements
+    function createAndAppendElement(type, id, name, innerHTML, parentEl, labelText, options) {
+      const element = document.createElement(type);
+      element.setAttribute("name", name);
+      element.setAttribute("id", id);
+
+      if (type !== "button") {
+          const label = document.createElement("label");
+          label.setAttribute("for", id);
+          label.textContent = labelText;
+          parentEl.appendChild(label);
+      }
+
+      element.innerHTML = innerHTML;
+
+        if (options) {
+            for (const option of options) {
+                const optionElement = document.createElement("option");
+                optionElement.value = option.value;
+                optionElement.textContent = option.text;
+                element.appendChild(optionElement);
+            }
+        }
+
+        parentEl.appendChild(element);
+        return element;
+    }
+
+    function openSectionCreateModal () {
+      modal.style.display = 'block';
+      const modalTitle = createAndAppendElement('h2', 'modal-title', null, 'Section form', modalContent);
+      const sectionForm = createAndAppendElement('form', 'todo-form', null, null, modalContent);
+      const sectionTitle = createAndAppendElement('input', 'title', 'title', null, sectionForm, 'Title');
+
+      const todoSubmitBtn = createAndAppendElement("button", "section-submit", null, 'Submit', sectionForm, "Submit");
+    
+      todoSubmitBtn.addEventListener("click", ()=>{
+        let newSection = SectionFactory(sectionTitle.value, sectionTitle.value);
+        console.log(newSection);
+        sections.push(newSection);
+        closeModal();
+        renderNavigation()
+        showContent(sections.find(section => section.id === sectionTitle.value))
+      })
+
+      createCloseModalBtn();
+    }
+    // function populateSection(sectionId, project, todo)
     function openTodoCreateModal(){
       const modalTitle = document.createElement('h2');
       modalTitle.innerHTML = 'Create Todo';
@@ -98,50 +150,23 @@ const domLoader = () =>{
       modal.style.display = 'block';
       // const todoForm = document.getElementById('todo-form');
       const todoForm = document.createElement("form");
-      todoForm.className = "todo-form";
       todoForm.id = "todo-form";
 
-      // Helper function to create and append form elements
-      function createAndAppendElement(type, name, id, labelText, options) {
-        const element = document.createElement(type);
-        element.setAttribute("name", name);
-        element.setAttribute("id", id);
-
-        if (type !== "button") {
-            const label = document.createElement("label");
-            label.setAttribute("for", id);
-            label.textContent = labelText;
-            todoForm.appendChild(label);
-        }
-
-          if (options) {
-              for (const option of options) {
-                  const optionElement = document.createElement("option");
-                  optionElement.value = option.value;
-                  optionElement.textContent = option.text;
-                  element.appendChild(optionElement);
-              }
-          }
-
-          todoForm.appendChild(element);
-          return element;
-      }
-
       // Create and append elements for Title, Description, Due Date, Priority, and Submit button
-      const todoTitle = createAndAppendElement("input", "title", "title", "Title");
-      const todoDescription = createAndAppendElement("textarea", "description", "description", "Description");
-      const todoDueDate = createAndAppendElement("input", "dueDate", "dueDate", "Due Date");
-      const todoPriority = createAndAppendElement("select", "priority", "priority", "Priority", [
+      const todoTitle = createAndAppendElement("input", "title", "title", null, todoForm, "Title");
+      const todoDescription = createAndAppendElement("textarea", "description", "description", null, todoForm, "Description");
+      const todoDueDate = createAndAppendElement("input", "dueDate", "dueDate", null, todoForm, "Due Date");
+      const todoPriority = createAndAppendElement("select", "priority", "priority", null, todoForm, "Priority", [
           { value: "low", text: "Low" },
           { value: "medium", text: "Medium" },
           { value: "top", text: "Top" },
       ]);
-      const todoSubmitBtn = createAndAppendElement("button", null, "todo-submit", "Submit");
-      todoSubmitBtn.innerHTML='Submit';
+      const todoSubmitBtn = createAndAppendElement("button", "todo-submit", null, 'Submit', todoForm, "Submit");
       todoSubmitBtn.addEventListener("click", ()=>{
         let newTodo = TodoFactory(todoTitle.value, todoDescription.value, todoDueDate.value,todoPriority.value);
         console.log(newTodo);
-        sections[0].todos.push(newTodo);
+        // i want here to be able to create todo in section that i want
+        populateSection('all',newTodo)
         closeModal();
         showContent(sections.find(section => section.id === 'all'));
       })
@@ -205,9 +230,8 @@ const domLoader = () =>{
   
     
     
-    function populateSection(sectionId, project, todo) {
-      project.addTodo(todo)
-      sections.find(section => section.id === sectionId).todos = project.todos;
+    function populateSection(sectionId, todo) {
+      sections.find(section => section.id === sectionId).todos.push(todo);
     
       // Refresh the navigation and content to see the changes
       renderNavigation();
