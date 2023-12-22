@@ -4,28 +4,11 @@ import { TodoFactory, ProjectFactory } from "./factories";
 // maybe tre to update function to be able to add todos and create and add projects as well
 
 let defaultTodo = TodoFactory('Open me...','i know how you feel... but keep going, just one step at a time','11/12/12','top',);
-let todo2 = TodoFactory('MyTodo2','sdfgsdg','11/12/12','top');
-let todo3 = TodoFactory('MyTodo3','sdfgsdg','11/12/12','top');
-console.log(defaultTodo)
-
-let project2 = ProjectFactory('newProj','NewProj')
-//  project1.addTodo(todo);
-//  project1.addTodo(todo2);
-//  project1.addTodo(todo3);
-
- console.log(project2)
  
-
 // Initial sample data for navigation items and corresponding content
 let sections = [
   { id: 'all', title: 'All Todos', todos: [defaultTodo] },
-  // { id: 'today', title: 'Today', todos: [] },
-  // { id: 'week', title: 'This week', todos: [] },
-  // { id: 'important', title: 'Important', todos: [] },
-  // { id: 'completed', title: 'Completed', todos: [] },
 ];
-
-// sections.push(project2)
 
 const domLoader = () =>{
     const navigation = document.getElementById('navigation');
@@ -113,25 +96,57 @@ const domLoader = () =>{
       modalContent.appendChild(modalTitle);
       // Here should be form element with submitAll button
       modal.style.display = 'block';
-      const todoForm = document.getElementById('todo-form');
-      const todoTitle = document.getElementById('title');
-      const todoPriority = document.getElementById('priority');
-      const todoDueDate = document.getElementById('dueDate');
-      const todoDescription = document.getElementById('description');
-      const todoSubmitBtn = document.getElementById('todo-submit')
-      modalContent.appendChild(todoForm);
-    
-      todoSubmitBtn.addEventListener('click', ()=>{
+      // const todoForm = document.getElementById('todo-form');
+      const todoForm = document.createElement("form");
+      todoForm.className = "todo-form";
+      todoForm.id = "todo-form";
+
+      // Helper function to create and append form elements
+      function createAndAppendElement(type, name, id, labelText, options) {
+        const element = document.createElement(type);
+        element.setAttribute("name", name);
+        element.setAttribute("id", id);
+
+        if (type !== "button") {
+            const label = document.createElement("label");
+            label.setAttribute("for", id);
+            label.textContent = labelText;
+            todoForm.appendChild(label);
+        }
+
+          if (options) {
+              for (const option of options) {
+                  const optionElement = document.createElement("option");
+                  optionElement.value = option.value;
+                  optionElement.textContent = option.text;
+                  element.appendChild(optionElement);
+              }
+          }
+
+          todoForm.appendChild(element);
+          return element;
+      }
+
+      // Create and append elements for Title, Description, Due Date, Priority, and Submit button
+      const todoTitle = createAndAppendElement("input", "title", "title", "Title");
+      const todoDescription = createAndAppendElement("textarea", "description", "description", "Description");
+      const todoDueDate = createAndAppendElement("input", "dueDate", "dueDate", "Due Date");
+      const todoPriority = createAndAppendElement("select", "priority", "priority", "Priority", [
+          { value: "low", text: "Low" },
+          { value: "medium", text: "Medium" },
+          { value: "top", text: "Top" },
+      ]);
+      const todoSubmitBtn = createAndAppendElement("button", null, "todo-submit", "Submit");
+      todoSubmitBtn.innerHTML='Submit';
+      todoSubmitBtn.addEventListener("click", ()=>{
         let newTodo = TodoFactory(todoTitle.value, todoDescription.value, todoDueDate.value,todoPriority.value);
         console.log(newTodo);
         sections[0].todos.push(newTodo);
         closeModal();
-        // while (modalContent.firstChild) {
-        //   modalContent.removeChild(modalContent.firstChild);
-        // }
         showContent(sections.find(section => section.id === 'all'));
       })
-
+      modalContent.appendChild(todoForm);
+  
       createCloseModalBtn();
       createUpdateModalBtn();
     }
@@ -163,12 +178,13 @@ const domLoader = () =>{
       modalContent.appendChild(closeButton);
     }
 
+
     // Function to close the modal
     function closeModal() {
       modal.style.display = 'none';
-      while (modalContent.firstChild) {
-        modalContent.removeChild(modalContent.firstChild);
-      }
+      
+      modalContent.innerHTML = '';
+      
     }
   
     function createUpdateModalBtn (){
@@ -190,13 +206,13 @@ const domLoader = () =>{
     
     
     function populateSection(sectionId, project, todo) {
-    project.addTodo(todo)
-    sections.find(section => section.id === sectionId).todos = project.todos;
-  
-    // Refresh the navigation and content to see the changes
-    renderNavigation();
-    showContent(sections.find(section => section.id === sectionId));
-  }
+      project.addTodo(todo)
+      sections.find(section => section.id === sectionId).todos = project.todos;
+    
+      // Refresh the navigation and content to see the changes
+      renderNavigation();
+      showContent(sections.find(section => section.id === sectionId));
+    }
   
 
   renderNavigation();
