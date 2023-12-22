@@ -170,8 +170,6 @@ const domLoader = () =>{
       todoSubmitBtn.addEventListener("click", ()=>{
         let newTodo = TodoFactory(todoTitle.value, todoDescription.value, todoDueDate.value,todoPriority.value);
         console.log(newTodo);
-        // i want here to be able to create todo in section that i want
-        // maybe througth modalTitle типу if contentchild is no modalTitte {content.innerhtml=== ''}
         if(sectionTitle.innerHTML === 'All todos') {
           populateSection('All todos',newTodo);
         } else {
@@ -179,7 +177,6 @@ const domLoader = () =>{
           populateSection('All todos',newTodo);
         }
         
-        // populateSection(sectionTitle.innerHTML, newTodo)
         closeModal();
         showContent(sections.find(section => section.id === sectionTitle.innerHTML));
       })
@@ -248,7 +245,9 @@ const domLoader = () =>{
     
       // Refresh the navigation and content to see the changes
       renderNavigation();
+      if(sectionTitle.innerHTML === 'All todos'){
       showContent(sections.find(section => section.id === sectionId));
+      }
     }
   
 
