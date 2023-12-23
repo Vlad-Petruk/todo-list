@@ -1,3 +1,4 @@
+import { addToLocalStorage, getFromLocalStorage,removeFromLocalStorage } from "./local-storage";
 import { TodoFactory, SectionFactory } from "./factories";
 
 // Maybe try to work with this function all the way, with sections(today,week, month) 
@@ -19,7 +20,7 @@ const domLoader = () =>{
     
 
     // Function to render navigation items
-    function renderNavigation() {
+    function renderNavigation(sections) {
       navigation.innerHTML = '';
       const createProjectBtn = createAndAppendElement('button', 'create-project-btn', null, 'Create project', navigation);
       createProjectBtn.addEventListener('click', ()=>{
@@ -138,10 +139,13 @@ const domLoader = () =>{
       todoSubmitBtn.addEventListener("click", ()=>{
         let newSection = SectionFactory(sectionTitle.value, sectionTitle.value);
         console.log(newSection);
-        sections.push(newSection);
+        let sectionsFromStorage = getFromLocalStorage('sections')
+        sectionsFromStorage.value.push(newSection);
+        addToLocalStorage('sections', sectionsFromStorage.value)
         closeModal();
-        renderNavigation()
-        showContent(sections.find(section => section.id === sectionTitle.value))
+        onload();
+        
+        showContent(sectionsFromStorage.value.find(section => section.id === sectionTitle.value))
       })
 
       createCloseModalBtn();
@@ -178,7 +182,8 @@ const domLoader = () =>{
         }
         
         closeModal();
-        showContent(sections.find(section => section.id === sectionTitle.innerHTML));
+        let sectionsFromStorage = getFromLocalStorage('sections')
+        showContent(sectionsFromStorage.value.find(section => section.id === sectionTitle.innerHTML));
       })
       modalContent.appendChild(todoForm);
   
@@ -241,25 +246,41 @@ const domLoader = () =>{
     
     
     function populateSection(sectionId, todo) {
-      sections.find(section => section.id === sectionId).todos.push(todo);
-    
+      let sectionsFromStorage = getFromLocalStorage('sections')
+      sectionsFromStorage.value.find(section => section.id === sectionId).todos.push(todo);
+      addToLocalStorage('sections', sectionsFromStorage.value)
       // Refresh the navigation and content to see the changes
-      renderNavigation();
+      onload();
       if(sectionTitle.innerHTML === 'All todos'){
-      showContent(sections.find(section => section.id === sectionId));
+        let sectionsFromStorage = getFromLocalStorage('sections')
+      showContent(sectionsFromStorage.value.find(section => section.id === sectionId));
       }
     }
   
+    const onload = () =>{
+      let sectionsFromStorage = getFromLocalStorage('sections')
+      if(sectionsFromStorage !== null) {
+      renderNavigation(sectionsFromStorage.value);
+    } else {renderNavigation(sections)}
+    }
 
-  renderNavigation();
-  showContent(sections.find(section => section.id === 'All todos'));
+    onload(); 
+    
+    let sectionsFromStorage = getFromLocalStorage('sections')
+    if(sectionsFromStorage !== null) {
+    showContent(sectionsFromStorage.value.find(section => section.id === 'All todos'));
+  } else {
+    addToLocalStorage('sections',sections)
+    showContent(sections.find(section => section.id === 'All todos'))
+  }
 
   return{
     renderNavigation,
     showContent,
     openTodoDetailsModal,
     closeModal,
-    populateSection
+    populateSection,
+    onload
   }
 }
 
