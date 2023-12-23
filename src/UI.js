@@ -92,6 +92,9 @@ const domLoader = () =>{
 
           todoContainer.appendChild(checkbox);
           todoContainer.appendChild(todoElement);
+          const buttonsElement = createAndAppendElement('div', 'buttons-el', null, null, todoContainer);
+          const deleteTodoBtn = createAndAppendElement('button', 'delete-todo-btn', null, '&times;', buttonsElement);
+          deleteTodoBtn.addEventListener('click', ()=>deleteTodo(index))
           contentElement.appendChild(todoContainer)
           
         });
@@ -204,7 +207,19 @@ const domLoader = () =>{
       createCloseModalBtn();
       createUpdateModalBtn();
     }
-  
+
+    function deleteTodo(index) {
+      let sectionsFromStorage = getFromLocalStorage('sections');
+      const section = sectionsFromStorage.value.find((sec) => sec.id === sectionTitle.innerHTML);
+    
+      if (section) {
+        section.todos.splice(index, 1); // Remove the todo at the specified index
+        addToLocalStorage('sections', sectionsFromStorage.value);
+        onload();
+        showContent(section)
+      }
+    }
+
     function createCloseModalBtn(){
       // Close modal when the close button is clicked
       const closeButton = document.createElement('div');
