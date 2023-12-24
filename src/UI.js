@@ -7,8 +7,9 @@ import { TodoFactory, SectionFactory } from "./factories";
 let defaultTodo = TodoFactory('Open me...','i know how you feel... but keep going, just one step at a time','11/12/12','top',);
  
 // Initial sample data for navigation items and corresponding content
+const defaultSectionId = 'All todos';
 let sections = [
-  { id: 'All todos', title: 'All todos', todos: [defaultTodo] },
+  { id: defaultSectionId, title: 'All todos', todos: [defaultTodo] },
 ];
 
 const domLoader = () =>{
@@ -29,12 +30,22 @@ const domLoader = () =>{
       sections.forEach(section => {
         const item = document.createElement('div');
         item.classList.add('nav-element')
-        if (section.id === 'completed'){
-          item.classList.add('project-separator');
+        // if (section.id === defaultSectionId){
+        //   item.classList.add('project-separator');
+        // }
+        const itemTitle = createAndAppendElement('div','item-title',null, section.title,item)
+        if(section.id !== defaultSectionId) {
+          const deleteTodoBtn = createAndAppendElement('div', 'delete-section-btn', null, '&times;', item);
+          deleteTodoBtn.addEventListener('click', ()=>{
+            deleteSection(section.id);
+            // showContent({ id: defaultSectionId, title: 'All todos', todos: [] });
+            // onload()
+          });
         }
-        item.textContent = section.title;
+        // item.textContent = section.title;
         item.addEventListener('click', () => showContent(section));
         navigation.appendChild(item);
+        
       });
     }
   
@@ -60,7 +71,7 @@ const domLoader = () =>{
       addTodoButton.addEventListener('click',()=>{
         openTodoCreateModal();
       })
-
+      
       // Check if there is content in the section
       if (section.todos.length === 0) {
         const noTodosMessage = document.createElement('p');
@@ -143,7 +154,6 @@ const domLoader = () =>{
     
       todoSubmitBtn.addEventListener("click", ()=>{
         let newSection = SectionFactory(sectionTitle.value, sectionTitle.value);
-        console.log(newSection);
         let sectionsFromStorage = getFromLocalStorage('sections')
         sectionsFromStorage.value.push(newSection);
         addToLocalStorage('sections', sectionsFromStorage.value)
@@ -155,7 +165,7 @@ const domLoader = () =>{
 
       createCloseModalBtn();
     }
-    // function populateSection(sectionId, project, todo)
+    
     function openTodoCreateModal(){
       const modalTitle = document.createElement('h2');
       modalTitle.innerHTML = 'Create Todo';
@@ -179,7 +189,7 @@ const domLoader = () =>{
       todoSubmitBtn.addEventListener("click", ()=>{
         let newTodo = TodoFactory(todoTitle.value, todoDescription.value, todoDueDate.value,todoPriority.value);
         console.log(newTodo);
-        if(sectionTitle.innerHTML === 'All todos') {
+        if(sectionTitle.innerHTML === defaultSectionId) {
           populateSection('All todos',newTodo);
         } else {
           populateSection(sectionTitle.textContent, newTodo);
@@ -210,47 +220,61 @@ const domLoader = () =>{
       createUpdateModalBtn();
     }
 
-    // function deleteTodo(index) {
-    //   let sectionsFromStorage = getFromLocalStorage('sections');
-    //   const section = sectionsFromStorage.value.find((sec) => sec.id === sectionTitle.innerHTML);
-    
-    //   if (section) {
-    //     section.todos.splice(index, 1); // Remove the todo at the specified index
-    //     addToLocalStorage('sections', sectionsFromStorage.value);
-    //     onload();
-    //     showContent(section)
-    //   }
-    // }
+// Function to delete a specific section
+    function deleteSection(sectionId) {
+      let sectionsFromStorage = getFromLocalStorage('sections');
 
-    // Function to delete a specific todo
-function deleteTodo(index) {
-  let sectionsFromStorage = getFromLocalStorage('sections');
-  const section = sectionsFromStorage.value.find((sec) => sec.id === sectionTitle.innerHTML);
-
-  if (section) {
-    const todoToDelete = section.todos[index];
-    // Check if the todo is in 'All todos'
-    const isAllTodos = section.id === 'All todos';
-
-    // Remove the todo from the specific section
-    section.todos.splice(index, 1);
-    addToLocalStorage('sections', sectionsFromStorage.value);
-
-    // Remove the todo from 'All todos' if not the default todo
-    if (!isAllTodos || todoToDelete.title !== 'Open me...') {
-      const allTodosSection = sectionsFromStorage.value.find((sec) => sec.id === 'All todos');
-      if (allTodosSection) {
-        const allTodosIndex = allTodosSection.todos.findIndex((todo) => todo.title === todoToDelete.title);
-        if (allTodosIndex !== -1) {
-          allTodosSection.todos.splice(allTodosIndex, 1);
+      // Find the index of the section to delete
+      const sectionIndex = sectionsFromStorage.value.findIndex((sec) => sec.id === sectionId);
+      
+      if (sectionIndex !== -1) {
+        // Check if the section is not 'All todos' or there is more than one section
+        if (sectionId !== defaultSectionId || sectionsFromStorage.value.length > 1) {
+         
+          sectionsFromStorage.value.splice(sectionIndex, 1); // Remove the section
+          
           addToLocalStorage('sections', sectionsFromStorage.value);
+          console.log(sections.find(section => section.id === defaultSectionId))
+          onload()
+          content.innerHTML='';
+          domLoader()
+          
+          // showContent({ id: defaultSectionId, title: 'All todos', todos: [] });
         }
       }
+      // onload();
+      // showContent(sections.find(section => section.id === defaultSectionId))
     }
-    onload();
-    showContent(section); // Update the content after deleting the todo
-  }
-}
+
+    // Function to delete a specific todo
+    function deleteTodo(index) {
+      let sectionsFromStorage = getFromLocalStorage('sections');
+      const section = sectionsFromStorage.value.find((sec) => sec.id === sectionTitle.innerHTML);
+
+      if (section) {
+        const todoToDelete = section.todos[index];
+        // Check if the todo is in 'All todos'
+        const isAllTodos = section.id === defaultSectionId;
+
+        // Remove the todo from the specific section
+        section.todos.splice(index, 1);
+        addToLocalStorage('sections', sectionsFromStorage.value);
+
+        // Remove the todo from 'All todos' if not the default todo
+        if (!isAllTodos || todoToDelete.title !== 'Open me...') {
+          const allTodosSection = sectionsFromStorage.value.find((sec) => sec.id === defaultSectionId);
+          if (allTodosSection) {
+            const allTodosIndex = allTodosSection.todos.findIndex((todo) => todo.title === todoToDelete.title);
+            if (allTodosIndex !== -1) {
+              allTodosSection.todos.splice(allTodosIndex, 1);
+              addToLocalStorage('sections', sectionsFromStorage.value);
+            }
+          }
+        }
+        onload();
+        showContent(section); // Update the content after deleting the todo
+      }
+    }
 
 
     function createCloseModalBtn(){
@@ -299,7 +323,7 @@ function deleteTodo(index) {
       addToLocalStorage('sections', sectionsFromStorage.value)
       // Refresh the navigation and content to see the changes
       onload();
-      if(sectionTitle.innerHTML === 'All todos'){
+      if(sectionTitle.innerHTML === defaultSectionId){
         let sectionsFromStorage = getFromLocalStorage('sections')
       showContent(sectionsFromStorage.value.find(section => section.id === sectionId));
       }
@@ -316,10 +340,10 @@ function deleteTodo(index) {
     
     let sectionsFromStorage = getFromLocalStorage('sections')
     if(sectionsFromStorage !== null) {
-    showContent(sectionsFromStorage.value.find(section => section.id === 'All todos'));
+    showContent(sectionsFromStorage.value.find(section => section.id === defaultSectionId));
   } else {
     addToLocalStorage('sections',sections)
-    showContent(sections.find(section => section.id === 'All todos'))
+    showContent(sections.find(section => section.id === defaultSectionId))
   }
 
   return{

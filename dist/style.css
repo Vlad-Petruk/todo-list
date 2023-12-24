@@ -72,9 +72,18 @@ header {
 }
 
 .nav-element{
-  padding: 10px;
+  padding: 15px;
   border: 1px solid black;
   border-radius: 8px;
+
+  display: flex;
+}
+
+#delete-section-btn{
+  margin-left: auto;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 
