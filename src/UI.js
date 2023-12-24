@@ -93,8 +93,10 @@ const domLoader = () =>{
           todoContainer.appendChild(checkbox);
           todoContainer.appendChild(todoElement);
           const buttonsElement = createAndAppendElement('div', 'buttons-el', null, null, todoContainer);
-          const deleteTodoBtn = createAndAppendElement('button', 'delete-todo-btn', null, '&times;', buttonsElement);
-          deleteTodoBtn.addEventListener('click', ()=>deleteTodo(index))
+          if(todo.title !== 'Open me...') {
+            const deleteTodoBtn = createAndAppendElement('button', 'delete-todo-btn', null, '&times;', buttonsElement);
+            deleteTodoBtn.addEventListener('click', ()=>deleteTodo(index));
+          }
           contentElement.appendChild(todoContainer)
           
         });
@@ -208,17 +210,48 @@ const domLoader = () =>{
       createUpdateModalBtn();
     }
 
-    function deleteTodo(index) {
-      let sectionsFromStorage = getFromLocalStorage('sections');
-      const section = sectionsFromStorage.value.find((sec) => sec.id === sectionTitle.innerHTML);
+    // function deleteTodo(index) {
+    //   let sectionsFromStorage = getFromLocalStorage('sections');
+    //   const section = sectionsFromStorage.value.find((sec) => sec.id === sectionTitle.innerHTML);
     
-      if (section) {
-        section.todos.splice(index, 1); // Remove the todo at the specified index
-        addToLocalStorage('sections', sectionsFromStorage.value);
-        onload();
-        showContent(section)
+    //   if (section) {
+    //     section.todos.splice(index, 1); // Remove the todo at the specified index
+    //     addToLocalStorage('sections', sectionsFromStorage.value);
+    //     onload();
+    //     showContent(section)
+    //   }
+    // }
+
+    // Function to delete a specific todo
+function deleteTodo(index) {
+  let sectionsFromStorage = getFromLocalStorage('sections');
+  const section = sectionsFromStorage.value.find((sec) => sec.id === sectionTitle.innerHTML);
+
+  if (section) {
+    const todoToDelete = section.todos[index];
+    // Check if the todo is in 'All todos'
+    const isAllTodos = section.id === 'All todos';
+
+    // Remove the todo from the specific section
+    section.todos.splice(index, 1);
+    addToLocalStorage('sections', sectionsFromStorage.value);
+
+    // Remove the todo from 'All todos' if not the default todo
+    if (!isAllTodos || todoToDelete.title !== 'Open me...') {
+      const allTodosSection = sectionsFromStorage.value.find((sec) => sec.id === 'All todos');
+      if (allTodosSection) {
+        const allTodosIndex = allTodosSection.todos.findIndex((todo) => todo.title === todoToDelete.title);
+        if (allTodosIndex !== -1) {
+          allTodosSection.todos.splice(allTodosIndex, 1);
+          addToLocalStorage('sections', sectionsFromStorage.value);
+        }
       }
     }
+    onload();
+    showContent(section); // Update the content after deleting the todo
+  }
+}
+
 
     function createCloseModalBtn(){
       // Close modal when the close button is clicked
