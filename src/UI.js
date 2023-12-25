@@ -105,6 +105,8 @@ const domLoader = () =>{
           todoContainer.appendChild(todoElement);
           const buttonsElement = createAndAppendElement('div', 'buttons-el', null, null, todoContainer);
           if(todo.title !== 'Open me...') {
+            
+            const dueDateinfo = createAndAppendElement('div', 'due-date-info', null, todo.dueDate, buttonsElement)
             const deleteTodoBtn = createAndAppendElement('button', 'delete-todo-btn', null, '&times;', buttonsElement);
             deleteTodoBtn.addEventListener('click', ()=>deleteTodo(index));
           }
@@ -149,11 +151,14 @@ const domLoader = () =>{
       const modalTitle = createAndAppendElement('h2', 'modal-title', null, 'Section form', modalContent);
       const sectionForm = createAndAppendElement('form', 'todo-form', null, null, modalContent);
       const sectionTitle = createAndAppendElement('input', 'title', 'title', null, sectionForm, 'Title');
-
+      
       const todoSubmitBtn = createAndAppendElement("button", "section-submit", null, 'Submit', sectionForm, "Submit");
     
       todoSubmitBtn.addEventListener("click", ()=>{
         let newSection = SectionFactory(sectionTitle.value, sectionTitle.value);
+        if(sectionTitle.value === ''){
+          alert('Please enter the title');
+        } else {
         let sectionsFromStorage = getFromLocalStorage('sections')
         sectionsFromStorage.value.push(newSection);
         addToLocalStorage('sections', sectionsFromStorage.value)
@@ -161,6 +166,7 @@ const domLoader = () =>{
         onload();
         
         showContent(sectionsFromStorage.value.find(section => section.id === sectionTitle.value))
+      }
       })
 
       createCloseModalBtn();
@@ -180,6 +186,7 @@ const domLoader = () =>{
       const todoTitle = createAndAppendElement("input", "title", "title", null, todoForm, "Title");
       const todoDescription = createAndAppendElement("textarea", "description", "description", null, todoForm, "Description");
       const todoDueDate = createAndAppendElement("input", "dueDate", "dueDate", null, todoForm, "Due Date");
+      todoDueDate.type = 'date';
       const todoPriority = createAndAppendElement("select", "priority", "priority", null, todoForm, "Priority", [
           { value: "low", text: "Low" },
           { value: "medium", text: "Medium" },
@@ -238,7 +245,6 @@ const domLoader = () =>{
           onload()
           content.innerHTML='';
           domLoader()
-          
           // showContent({ id: defaultSectionId, title: 'All todos', todos: [] });
         }
       }

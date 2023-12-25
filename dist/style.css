@@ -56,6 +56,12 @@ header {
   border-bottom: 1px solid rgb(207, 193, 193);
 }
 
+#buttons-el{
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
 .navigation {
   width: 200px;
   padding: 20px;
